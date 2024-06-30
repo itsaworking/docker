@@ -1,0 +1,36 @@
+version: '2'
+services:
+  siteapi:
+    build: .
+    image: 8coupons/site
+    container_name: siteapi
+    command: bash -c "cd api && npm run start"
+    restart: always
+  siteout:
+    build: .
+    image: 8coupons/site
+    container_name: siteout
+    command: bash -c "cd api && npm run start:outserver"
+    env_file: out.env
+    restart: always
+  siteweb:
+    build: .
+    image: 8coupons/site
+    container_name: siteweb
+    command: bash -c "cd web && npm run start"
+    depends_on:
+      - siteredis
+    env_file: web.env
+    restart: always
+  siteredis:
+    container_name: siteredis
+    image: redis
+    restart: always
+  phputil:
+    build: ./phputil
+    image: 8coupons/sitephputil
+    restart: always
+networks:
+  default:
+    external:
+      name: 8coupons
