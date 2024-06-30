@@ -1,0 +1,2 @@
+PORT=8000
+docker run -it -v $PWD:/app -w "/app" -p $PORT:80 8coupons/sitephputil
