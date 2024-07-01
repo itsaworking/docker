@@ -11,15 +11,15 @@ RUN apt-get update && \
 
 # Copy API package.json and install dependencies
 COPY ./api/package.json /site/api/package.json
-RUN cd /site/api; npm install
+RUN cd /site/api && npm install
 
 # Copy Web package.json and install dependencies
 COPY ./web/package.json /site/web/package.json
-RUN cd /site/web; npm install
+RUN cd /site/web && npm install
 
 # Apply patches for Web
 COPY ./web/patches /site/web/patches
-RUN cd /site/web; npm run patch-package
+RUN cd /site/web && npm run patch-package
 
 # Download and extract GeoLite2-City data
 RUN mkdir -p /site/api/data && cd /site/api/data && curl "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key=wNKfWihi4Ayoc99a&suffix=tar.gz" --output GeoLite2-City.tar.gz && tar -xvzf GeoLite2-City.tar.gz --strip 1
@@ -37,3 +37,6 @@ RUN cd /site/web && npm run build
 # Set working directory and expose port
 WORKDIR /site
 EXPOSE 80
+
+CMD ["npm", "start", "--prefix", "api"]
+
